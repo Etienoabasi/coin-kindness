@@ -1,40 +1,103 @@
 import { useState, useEffect, useCallback } from "react";
 import { Transaction } from "@/lib/types";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const STORAGE_KEY = "finance-tracker-transactions";
+export function useTransactions(userId: string | undefined) {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-const loadTransactions = (): Transaction[] => {
-  try {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-};
+  const fetchTransactions = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("*")
+      .order("date", { ascending: false });
 
-export function useTransactions() {
-  const [transactions, setTransactions] = useState<Transaction[]>(loadTransactions);
+    if (error) {
+      toast({ title: "Error loading transactions", description: error.message, variant: "destructive" });
+    } else {
+      setTransactions(
+        (data || []).map((t) => ({
+          id: t.id,
+          type: t.type as "income" | "expense",
+          amount: Number(t.amount),
+          category: t.category,
+          description: t.description,
+          date: t.date,
+        }))
+      );
+    }
+    setLoading(false);
+  }, [userId, toast]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-  }, [transactions]);
+    fetchTransactions();
+  }, [fetchTransactions]);
 
-  const addTransaction = useCallback((t: Omit<Transaction, "id">) => {
-    setTransactions((prev) => [
-      { ...t, id: crypto.randomUUID() },
-      ...prev,
-    ]);
-  }, []);
+  const addTransaction = useCallback(
+    async (t: Omit<Transaction, "id">) => {
+      if (!userId) return;
+      const { data, error } = await supabase
+        .from("transactions")
+        .insert({ ...t, user_id: userId })
+        .select()
+        .single();
 
-  const updateTransaction = useCallback((id: string, updates: Partial<Transaction>) => {
-    setTransactions((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
-    );
-  }, []);
+      if (error) {
+        toast({ title: "Error adding transaction", description: error.message, variant: "destructive" });
+      } else if (data) {
+        setTransactions((prev) => [
+          {
+            id: data.id,
+            type: data.type as "income" | "expense",
+            amount: Number(data.amount),
+            category: data.category,
+            description: data.description,
+            date: data.date,
+          },
+          ...prev,
+        ]);
+      }
+    },
+    [userId, toast]
+  );
 
-  const deleteTransaction = useCallback((id: string) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  const updateTransaction = useCallback(
+    async (id: string, updates: Partial<Transaction>) => {
+      const { error } = await supabase
+        .from("transactions")
+        .update(updates)
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Error updating transaction", description: error.message, variant: "destructive" });
+      } else {
+        setTransactions((prev) =>
+          prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
+        );
+      }
+    },
+    [toast]
+  );
+
+  const deleteTransaction = useCallback(
+    async (id: string) => {
+      const { error } = await supabase
+        .from("transactions")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        toast({ title: "Error deleting transaction", description: error.message, variant: "destructive" });
+      } else {
+        setTransactions((prev) => prev.filter((t) => t.id !== id));
+      }
+    },
+    [toast]
+  );
 
   const totalIncome = transactions
     .filter((t) => t.type === "income")
@@ -54,5 +117,6 @@ export function useTransactions() {
     totalIncome,
     totalExpense,
     balance,
+    loading,
   };
 }
