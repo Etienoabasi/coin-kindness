@@ -3,10 +3,85 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { AppLayout } from "@/components/AppLayout";
+import { useTransactions } from "@/hooks/useTransactions";
+import { useSettings } from "@/hooks/useSettings";
+import Dashboard from "@/pages/Dashboard";
+import TransactionsPage from "@/pages/Transactions";
+import AnalyticsPage from "@/pages/Analytics";
+import SettingsPage from "@/pages/SettingsPage";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
+
+function AppContent() {
+  const {
+    transactions, addTransaction, updateTransaction,
+    deleteTransaction, totalIncome, totalExpense, balance,
+  } = useTransactions();
+
+  const {
+    settings, toggleDarkMode, setCurrency, setBudgetGoals, formatCurrency,
+  } = useSettings();
+
+  return (
+    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode}>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Dashboard
+              transactions={transactions}
+              balance={balance}
+              totalIncome={totalIncome}
+              totalExpense={totalExpense}
+              addTransaction={addTransaction}
+              updateTransaction={updateTransaction}
+              deleteTransaction={deleteTransaction}
+              formatCurrency={formatCurrency}
+            />
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <TransactionsPage
+              transactions={transactions}
+              addTransaction={addTransaction}
+              updateTransaction={updateTransaction}
+              deleteTransaction={deleteTransaction}
+              formatCurrency={formatCurrency}
+            />
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <AnalyticsPage
+              transactions={transactions}
+              formatCurrency={formatCurrency}
+              budgetGoals={settings.budgetGoals}
+            />
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <SettingsPage
+              darkMode={settings.darkMode}
+              onToggleDark={toggleDarkMode}
+              currency={settings.currency}
+              onSetCurrency={setCurrency}
+              budgetGoals={settings.budgetGoals}
+              onSetBudgetGoals={setBudgetGoals}
+            />
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AppLayout>
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -14,11 +89,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
