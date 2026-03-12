@@ -17,7 +17,13 @@ interface SettingsPageProps {
   onSetBudgetGoals: (g: BudgetGoal[]) => void;
 }
 
-const currencies = ["USD", "EUR", "GBP", "JPY", "CAD", "AUD", "INR"];
+const currencies = [
+  "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "INR", "CNY", "KRW", "BRL",
+  "MXN", "ZAR", "CHF", "SEK", "NOK", "DKK", "PLN", "CZK", "HUF", "RUB",
+  "TRY", "THB", "IDR", "MYR", "PHP", "VND", "SGD", "HKD", "TWD", "NZD",
+  "ARS", "CLP", "COP", "PEN", "EGP", "NGN", "KES", "GHS", "AED", "SAR",
+  "QAR", "KWD", "BHD", "OMR", "ILS", "PKR", "BDT", "LKR", "MMK", "UAH",
+];
 
 export default function SettingsPage({
   darkMode, onToggleDark, currency, onSetCurrency, budgetGoals, onSetBudgetGoals,
