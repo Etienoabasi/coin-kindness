@@ -6,26 +6,48 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/AppLayout";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useSettings } from "@/hooks/useSettings";
+import { useAuth } from "@/hooks/useAuth";
 import Dashboard from "@/pages/Dashboard";
 import TransactionsPage from "@/pages/Transactions";
 import AnalyticsPage from "@/pages/Analytics";
 import SettingsPage from "@/pages/SettingsPage";
+import AuthPage from "@/pages/Auth";
+import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
+  const { user, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
+
   const {
     transactions, addTransaction, updateTransaction,
     deleteTransaction, totalIncome, totalExpense, balance,
-  } = useTransactions();
+  } = useTransactions(user?.id);
 
   const {
     settings, toggleDarkMode, setCurrency, setBudgetGoals, formatCurrency,
-  } = useSettings();
+  } = useSettings(user?.id);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="*" element={<AuthPage onSignIn={signIn} onSignUp={signUp} onResetPassword={resetPassword} />} />
+      </Routes>
+    );
+  }
 
   return (
-    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode}>
+    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode} onSignOut={signOut} userEmail={user.email}>
       <Routes>
         <Route
           path="/"
