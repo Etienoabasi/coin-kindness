@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface AuthPageProps {
   onSignIn: (email: string, password: string) => Promise<{ error: any }>;
-  onSignUp: (email: string, password: string) => Promise<{ error: any }>;
+  onSignUp: (email: string, password: string) => Promise<{ error: any; needsConfirmation?: boolean }>;
   onResetPassword: (email: string) => Promise<{ error: any }>;
 }
 
