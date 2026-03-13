@@ -35,6 +35,17 @@ function AppContent() {
     alerts, unreadCount, checkBudgetAlerts, markAsRead, markAllAsRead,
   } = useBudgetAlerts(user?.id);
 
+  const addTransactionWithAlertCheck = useCallback(
+    async (t: Parameters<typeof addTransaction>[0]) => {
+      await addTransaction(t);
+      if (t.type === "expense") {
+        // Small delay to let the DB commit, then check alerts
+        setTimeout(() => checkBudgetAlerts(), 500);
+      }
+    },
+    [addTransaction, checkBudgetAlerts]
+  );
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
