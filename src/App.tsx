@@ -52,7 +52,7 @@ function AppContent() {
   }
 
   return (
-    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode} onSignOut={signOut} userEmail={user.email}>
+    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode} onSignOut={signOut} userEmail={user.email} alerts={alerts} unreadCount={unreadCount} onMarkAsRead={markAsRead} onMarkAllAsRead={markAllAsRead} formatCurrency={formatCurrency}>
       <Routes>
         <Route
           path="/"
