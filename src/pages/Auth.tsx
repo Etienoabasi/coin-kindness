@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface AuthPageProps {
   onSignIn: (email: string, password: string) => Promise<{ error: any }>;
-  onSignUp: (email: string, password: string) => Promise<{ error: any }>;
+  onSignUp: (email: string, password: string) => Promise<{ error: any; needsConfirmation?: boolean }>;
   onResetPassword: (email: string) => Promise<{ error: any }>;
 }
 
@@ -32,10 +32,10 @@ export default function AuthPage({ onSignIn, onSignUp, onResetPassword }: AuthPa
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await onSignUp(email, password);
+    const { error, needsConfirmation } = await onSignUp(email, password);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
+    } else if (needsConfirmation) {
       toast({ title: "Check your email", description: "We sent you a confirmation link." });
     }
     setLoading(false);
