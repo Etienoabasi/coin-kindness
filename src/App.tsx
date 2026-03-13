@@ -86,7 +86,7 @@ function AppContent() {
           element={
             <TransactionsPage
               transactions={transactions}
-              addTransaction={addTransaction}
+              addTransaction={addTransactionWithAlertCheck}
               updateTransaction={updateTransaction}
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}
