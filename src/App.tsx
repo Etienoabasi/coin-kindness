@@ -7,6 +7,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useSettings } from "@/hooks/useSettings";
 import { useAuth } from "@/hooks/useAuth";
+import { useBudgetAlerts } from "@/hooks/useBudgetAlerts";
 import Dashboard from "@/pages/Dashboard";
 import TransactionsPage from "@/pages/Transactions";
 import AnalyticsPage from "@/pages/Analytics";
