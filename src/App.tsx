@@ -74,7 +74,7 @@ function AppContent() {
               balance={balance}
               totalIncome={totalIncome}
               totalExpense={totalExpense}
-              addTransaction={addTransaction}
+              addTransaction={addTransactionWithAlertCheck}
               updateTransaction={updateTransaction}
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}
