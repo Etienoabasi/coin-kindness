@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -7,6 +8,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useSettings } from "@/hooks/useSettings";
 import { useAuth } from "@/hooks/useAuth";
+import { useBudgetAlerts } from "@/hooks/useBudgetAlerts";
 import Dashboard from "@/pages/Dashboard";
 import TransactionsPage from "@/pages/Transactions";
 import AnalyticsPage from "@/pages/Analytics";
@@ -29,6 +31,21 @@ function AppContent() {
     settings, toggleDarkMode, setCurrency, setBudgetGoals, formatCurrency,
   } = useSettings(user?.id);
 
+  const {
+    alerts, unreadCount, checkBudgetAlerts, markAsRead, markAllAsRead,
+  } = useBudgetAlerts(user?.id);
+
+  const addTransactionWithAlertCheck = useCallback(
+    async (t: Parameters<typeof addTransaction>[0]) => {
+      await addTransaction(t);
+      if (t.type === "expense") {
+        // Small delay to let the DB commit, then check alerts
+        setTimeout(() => checkBudgetAlerts(), 500);
+      }
+    },
+    [addTransaction, checkBudgetAlerts]
+  );
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -47,7 +64,7 @@ function AppContent() {
   }
 
   return (
-    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode} onSignOut={signOut} userEmail={user.email}>
+    <AppLayout darkMode={settings.darkMode} onToggleDark={toggleDarkMode} onSignOut={signOut} userEmail={user.email} alerts={alerts} unreadCount={unreadCount} onMarkAsRead={markAsRead} onMarkAllAsRead={markAllAsRead} formatCurrency={formatCurrency}>
       <Routes>
         <Route
           path="/"
@@ -57,7 +74,7 @@ function AppContent() {
               balance={balance}
               totalIncome={totalIncome}
               totalExpense={totalExpense}
-              addTransaction={addTransaction}
+              addTransaction={addTransactionWithAlertCheck}
               updateTransaction={updateTransaction}
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}
@@ -69,7 +86,7 @@ function AppContent() {
           element={
             <TransactionsPage
               transactions={transactions}
-              addTransaction={addTransaction}
+              addTransaction={addTransactionWithAlertCheck}
               updateTransaction={updateTransaction}
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}

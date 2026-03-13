@@ -1,1 +1,4 @@
 project_id = "qpbeygoaoguopcgazeqv"
+
+[functions.check-budget-alerts]
+verify_jwt = false
