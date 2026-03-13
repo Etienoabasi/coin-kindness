@@ -30,6 +30,10 @@ function AppContent() {
     settings, toggleDarkMode, setCurrency, setBudgetGoals, formatCurrency,
   } = useSettings(user?.id);
 
+  const {
+    alerts, unreadCount, checkBudgetAlerts, markAsRead, markAllAsRead,
+  } = useBudgetAlerts(user?.id);
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
