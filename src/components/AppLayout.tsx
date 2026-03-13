@@ -2,6 +2,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import { BudgetAlertsBell } from "@/components/BudgetAlertsBell";
+import { BudgetAlert } from "@/hooks/useBudgetAlerts";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -9,6 +11,11 @@ interface AppLayoutProps {
   onToggleDark: () => void;
   onSignOut?: () => void;
   userEmail?: string;
+  alerts: BudgetAlert[];
+  unreadCount: number;
+  onMarkAsRead: (id: string) => void;
+  onMarkAllAsRead: () => void;
+  formatCurrency: (n: number) => string;
 }
 
 export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail }: AppLayoutProps) {
