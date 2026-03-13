@@ -18,7 +18,7 @@ interface AppLayoutProps {
   formatCurrency: (n: number) => string;
 }
 
-export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail }: AppLayoutProps) {
+export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail, alerts, unreadCount, onMarkAsRead, onMarkAllAsRead, formatCurrency }: AppLayoutProps) {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
