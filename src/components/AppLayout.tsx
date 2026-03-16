@@ -28,7 +28,6 @@ export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEma
               <h2 className="text-sm font-medium text-muted-foreground">Personal Finance Tracker</h2>
             </div>
             <div className="flex items-center gap-2">
-              {userEmail && <span className="text-xs text-muted-foreground hidden sm:inline">{userEmail}</span>}
               <BudgetAlertsBell
                 alerts={alerts}
                 unreadCount={unreadCount}
