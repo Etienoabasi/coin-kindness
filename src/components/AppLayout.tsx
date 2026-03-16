@@ -20,7 +20,7 @@ export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEma
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
-        <AppSidebar darkMode={darkMode} onToggleDark={onToggleDark} onSignOut={onSignOut} />
+        <AppSidebar darkMode={darkMode} onToggleDark={onToggleDark} onSignOut={onSignOut} userEmail={userEmail} />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
             <div className="flex items-center">
