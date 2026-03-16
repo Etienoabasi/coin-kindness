@@ -12,6 +12,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -24,9 +25,23 @@ interface AppSidebarProps {
   darkMode: boolean;
   onToggleDark: () => void;
   onSignOut?: () => void;
+  userEmail?: string;
 }
 
-export function AppSidebar({ darkMode, onToggleDark, onSignOut }: AppSidebarProps) {
+function getEmailInitials(email?: string) {
+  if (!email) return "U";
+
+  const [name = ""] = email.split("@");
+  const parts = name.split(/[._-]+/).filter(Boolean);
+
+  if (parts.length >= 2) {
+    return `${parts[0][0] ?? ""}${parts[1][0] ?? ""}`.toUpperCase();
+  }
+
+  return name.slice(0, 2).toUpperCase() || "U";
+}
+
+export function AppSidebar({ darkMode, onToggleDark, onSignOut, userEmail }: AppSidebarProps) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
 
@@ -66,6 +81,21 @@ export function AppSidebar({ darkMode, onToggleDark, onSignOut }: AppSidebarProp
       </SidebarContent>
 
       <SidebarFooter className="p-3 space-y-2">
+        {userEmail && (
+          <div className="flex items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2">
+            <Avatar className="h-9 w-9">
+              <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
+                {getEmailInitials(userEmail)}
+              </AvatarFallback>
+            </Avatar>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-sidebar-foreground">Signed in</p>
+                <p className="truncate text-xs text-muted-foreground">{userEmail}</p>
+              </div>
+            )}
+          </div>
+        )}
         {onSignOut && (
           <Button
             variant="ghost"
