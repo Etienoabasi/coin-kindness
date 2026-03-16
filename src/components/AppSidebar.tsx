@@ -1,6 +1,5 @@
-import { LayoutDashboard, ArrowLeftRight, BarChart3, Settings, Wallet, Moon, Sun, Menu } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BarChart3, Settings, Wallet, Moon, Sun, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -24,12 +23,12 @@ const navItems = [
 interface AppSidebarProps {
   darkMode: boolean;
   onToggleDark: () => void;
+  onSignOut?: () => void;
 }
 
-export function AppSidebar({ darkMode, onToggleDark }: AppSidebarProps) {
+export function AppSidebar({ darkMode, onToggleDark, onSignOut }: AppSidebarProps) {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -66,7 +65,18 @@ export function AppSidebar({ darkMode, onToggleDark }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-3">
+      <SidebarFooter className="p-3 space-y-2">
+        {onSignOut && (
+          <Button
+            variant="ghost"
+            size={collapsed ? "icon" : "default"}
+            onClick={onSignOut}
+            className="w-full justify-start gap-3 text-sidebar-foreground"
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            {!collapsed && "Sign Out"}
+          </Button>
+        )}
         <Button
           variant="ghost"
           size={collapsed ? "icon" : "default"}
