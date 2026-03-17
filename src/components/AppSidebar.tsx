@@ -61,33 +61,35 @@ function getDisplayName(email?: string) {
 }
 
 export function AppSidebar({ darkMode, onToggleDark, onSignOut, userEmail }: AppSidebarProps) {
-  const { state } = useSidebar();
-  const collapsed = state === "collapsed";
+  const { state, isMobile, setOpenMobile } = useSidebar();
+  const collapsed = !isMobile && state === "collapsed";
   const displayName = getDisplayName(userEmail);
+  const handleMobileNavigation = () => {
+    if (isMobile) setOpenMobile(false);
+  };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <div className="flex items-center gap-3 p-4">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
+      <div className="flex items-center gap-3 px-4 py-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary">
           <Wallet className="h-4 w-4 text-primary-foreground" />
         </div>
-        {!collapsed && (
-          <span className="text-lg font-bold tracking-tight text-foreground">FinTrack</span>
-        )}
+        {!collapsed && <span className="text-lg font-bold tracking-tight text-foreground">FinTrack</span>}
       </div>
 
-      <SidebarContent className="px-2">
-        <SidebarGroup>
+      <SidebarContent className="px-2 pb-2">
+        <SidebarGroup className="px-0">
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-1.5">
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
                       end={item.url === "/"}
-                      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                      activeClassName="bg-primary/10 text-primary font-medium"
+                      onClick={handleMobileNavigation}
+                      className="flex items-center gap-3 rounded-lg px-3 py-3 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      activeClassName="bg-primary/10 font-medium text-primary"
                     >
                       <item.icon className="h-5 w-5 shrink-0" />
                       {!collapsed && <span>{item.title}</span>}
@@ -100,13 +102,13 @@ export function AppSidebar({ darkMode, onToggleDark, onSignOut, userEmail }: App
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="space-y-2 p-3">
+      <SidebarFooter className="mt-auto space-y-2 border-t border-sidebar-border p-3 pb-4">
         {userEmail && (
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-auto w-full justify-start rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2 text-left text-sidebar-foreground hover:bg-sidebar-accent"
+                className="h-auto w-full justify-start rounded-lg border border-sidebar-border bg-sidebar-accent/40 px-3 py-2.5 text-left text-sidebar-foreground hover:bg-sidebar-accent"
               >
                 <Avatar className="h-9 w-9 shrink-0">
                   <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
@@ -121,7 +123,7 @@ export function AppSidebar({ darkMode, onToggleDark, onSignOut, userEmail }: App
                 )}
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="w-[calc(100vw-1.5rem)] max-w-md">
               <DialogHeader>
                 <DialogTitle>Your profile</DialogTitle>
                 <DialogDescription>Account details for the currently signed-in user.</DialogDescription>

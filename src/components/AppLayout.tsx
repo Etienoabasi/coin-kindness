@@ -19,15 +19,15 @@ interface AppLayoutProps {
 export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail, alerts, unreadCount, onMarkAsRead, onMarkAllAsRead, formatCurrency }: AppLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-background">
         <AppSidebar darkMode={darkMode} onToggleDark={onToggleDark} onSignOut={onSignOut} userEmail={userEmail} />
-        <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 flex items-center justify-between border-b border-border px-4 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-            <div className="flex items-center">
-              <SidebarTrigger className="mr-4" />
-              <h2 className="text-sm font-medium text-muted-foreground">Personal Finance Tracker</h2>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border bg-card/80 px-3 backdrop-blur-sm sm:px-4">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <SidebarTrigger className="h-9 w-9 shrink-0 rounded-md" />
+              <h2 className="truncate text-xs font-medium text-muted-foreground sm:text-sm">Personal Finance Tracker</h2>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <BudgetAlertsBell
                 alerts={alerts}
                 unreadCount={unreadCount}
@@ -37,7 +37,7 @@ export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEma
               />
             </div>
           </header>
-          <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto">
+          <main className="flex-1 overflow-auto px-3 py-4 sm:px-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
             {children}
           </main>
         </div>

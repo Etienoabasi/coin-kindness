@@ -25,10 +25,10 @@ export default function Dashboard({
   const recentTransactions = transactions.slice(0, 5);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-5 sm:space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Overview of your finances</p>
+        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Overview of your finances</p>
       </motion.div>
 
       <SummaryCards
