@@ -106,13 +106,15 @@ function AppContent() {
         <Route
           path="/settings"
           element={
-            <SettingsPage
+          <SettingsPage
               darkMode={settings.darkMode}
               onToggleDark={toggleDarkMode}
               currency={settings.currency}
               onSetCurrency={setCurrency}
               budgetGoals={settings.budgetGoals}
               onSetBudgetGoals={setBudgetGoals}
+              userEmail={user.email}
+              onSignOut={signOut}
             />
           }
         />
