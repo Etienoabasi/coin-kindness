@@ -2,9 +2,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { BudgetAlertsBell } from "@/components/BudgetAlertsBell";
 import { BudgetAlert } from "@/hooks/useBudgetAlerts";
-import { Button } from "@/components/ui/button";
-import { Plus, BarChart3 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -20,8 +17,6 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail, alerts, unreadCount, onMarkAsRead, onMarkAllAsRead, formatCurrency }: AppLayoutProps) {
-  const navigate = useNavigate();
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -33,23 +28,6 @@ export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEma
               <h2 className="truncate text-xs font-medium text-muted-foreground sm:text-sm">Personal Finance Tracker</h2>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="hidden gap-1.5 sm:inline-flex"
-                onClick={() => navigate("/analytics")}
-              >
-                <BarChart3 className="h-4 w-4" />
-                Analytics
-              </Button>
-              <Button
-                size="sm"
-                className="gap-1.5"
-                onClick={() => navigate("/transactions?new=1")}
-              >
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">Add Transaction</span>
-              </Button>
               <BudgetAlertsBell
                 alerts={alerts}
                 unreadCount={unreadCount}
