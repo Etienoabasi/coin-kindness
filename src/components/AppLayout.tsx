@@ -2,9 +2,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { BudgetAlertsBell } from "@/components/BudgetAlertsBell";
 import { BudgetAlert } from "@/hooks/useBudgetAlerts";
-import { Button } from "@/components/ui/button";
-import { Plus, BarChart3 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface AppLayoutProps {
   children: React.ReactNode;
