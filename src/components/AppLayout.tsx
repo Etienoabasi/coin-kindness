@@ -17,8 +17,6 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, darkMode, onToggleDark, onSignOut, userEmail, alerts, unreadCount, onMarkAsRead, onMarkAllAsRead, formatCurrency }: AppLayoutProps) {
-  const navigate = useNavigate();
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
