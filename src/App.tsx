@@ -80,6 +80,7 @@ function AppContent() {
               formatCurrency={formatCurrency}
               loading={txLoading}
             />
+          }
         />
         <Route
           path="/transactions"
