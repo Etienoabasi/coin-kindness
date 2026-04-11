@@ -79,7 +79,7 @@ function AppContent() {
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}
               loading={txLoading}
-          }
+            />
         />
         <Route
           path="/transactions"
