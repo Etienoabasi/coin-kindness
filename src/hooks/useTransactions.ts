@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { Transaction } from "@/lib/types";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function useTransactions(userId: string | undefined) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   const fetchTransactions = useCallback(async () => {
     if (!userId) return;
@@ -17,7 +16,7 @@ export function useTransactions(userId: string | undefined) {
       .order("date", { ascending: false });
 
     if (error) {
-      toast({ title: "Error loading transactions", description: error.message, variant: "destructive" });
+      toast.error("Error loading transactions", { description: error.message });
     } else {
       setTransactions(
         (data || []).map((t) => ({
@@ -31,7 +30,7 @@ export function useTransactions(userId: string | undefined) {
       );
     }
     setLoading(false);
-  }, [userId, toast]);
+  }, [userId]);
 
   useEffect(() => {
     fetchTransactions();
@@ -47,7 +46,7 @@ export function useTransactions(userId: string | undefined) {
         .single();
 
       if (error) {
-        toast({ title: "Error adding transaction", description: error.message, variant: "destructive" });
+        toast.error("Failed to add transaction", { description: error.message });
       } else if (data) {
         setTransactions((prev) => [
           {
@@ -60,9 +59,12 @@ export function useTransactions(userId: string | undefined) {
           },
           ...prev,
         ]);
+        toast.success("Transaction added", {
+          description: `${t.type === "income" ? "Income" : "Expense"}: ${t.category}`,
+        });
       }
     },
-    [userId, toast]
+    [userId]
   );
 
   const updateTransaction = useCallback(
@@ -73,14 +75,15 @@ export function useTransactions(userId: string | undefined) {
         .eq("id", id);
 
       if (error) {
-        toast({ title: "Error updating transaction", description: error.message, variant: "destructive" });
+        toast.error("Failed to update transaction", { description: error.message });
       } else {
         setTransactions((prev) =>
           prev.map((t) => (t.id === id ? { ...t, ...updates } : t))
         );
+        toast.success("Transaction updated");
       }
     },
-    [toast]
+    []
   );
 
   const deleteTransaction = useCallback(
@@ -91,12 +94,13 @@ export function useTransactions(userId: string | undefined) {
         .eq("id", id);
 
       if (error) {
-        toast({ title: "Error deleting transaction", description: error.message, variant: "destructive" });
+        toast.error("Failed to delete transaction", { description: error.message });
       } else {
         setTransactions((prev) => prev.filter((t) => t.id !== id));
+        toast.success("Transaction deleted");
       }
     },
-    [toast]
+    []
   );
 
   const totalIncome = transactions
