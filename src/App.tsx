@@ -24,7 +24,7 @@ function AppContent() {
 
   const {
     transactions, addTransaction, updateTransaction,
-    deleteTransaction, totalIncome, totalExpense, balance,
+    deleteTransaction, totalIncome, totalExpense, balance, loading: txLoading,
   } = useTransactions(user?.id);
 
   const {
