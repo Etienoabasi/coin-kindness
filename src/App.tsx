@@ -78,7 +78,7 @@ function AppContent() {
               updateTransaction={updateTransaction}
               deleteTransaction={deleteTransaction}
               formatCurrency={formatCurrency}
-            />
+              loading={txLoading}
           }
         />
         <Route
